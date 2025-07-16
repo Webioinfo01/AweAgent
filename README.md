@@ -8,6 +8,13 @@ pip install -e .
 ```
 
 ## Usage
+
+api key set
+```
+export DEEPSEEK_API_KEY="sk-**"
+SEMANTICSCHOLAR_API_KEY="sk-**"
+```
+demo
 ```
 from agno.utils.pprint import pprint_run_response
 from aweagent.agent import PaperAgent
