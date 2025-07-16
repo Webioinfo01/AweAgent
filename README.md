@@ -1,7 +1,13 @@
 # AweAgent 使用说明
 
+## install
+```
+git clone git@github.com:Webioinfo01/AweAgent.git
+cd AweAgent
+pip install -e .
+```
 
-
+## Usage
 ```
 from agno.utils.pprint import pprint_run_response
 from aweagent.agent import PaperAgent
