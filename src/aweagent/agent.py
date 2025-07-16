@@ -94,7 +94,9 @@ class PaperAgent(Workflow):
     def run(self, msg):
         rep = self.searcher.run(msg)
         annotator_res = self.annotator.run(rep.content)
-        readme = self.reporter.run(annotator_res.content.model_dump_json())
+        paper_list = annotator_res.content.model_dump()['paper_list']
+        query_paper_res = self.query_paper(paper_list)
+        readme = self.reporter.run(str(query_paper_res))
         with open("readme.md", "w", encoding="utf-8") as f:
             f.write(readme.content)
         return readme
