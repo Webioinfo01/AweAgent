@@ -18,7 +18,7 @@ class PaperModel(BaseModel):
     category: str = Field(description="The category of the paper")
     journal: str = Field(description="The journal of the paper")
     authors: str = Field(description="The authors of the paper")
-    date: str = Field(description="The publication date of the paper")
+    publicationDate: str = Field(description="The publication date of the paper")
     url: str = Field(description="The url of the paper")
     venue: str = Field(description="The venue of the paper")
 
@@ -77,12 +77,12 @@ class PaperAgent(Workflow):
             示例输出：
 
             ## AI Agents
-            | DOI | Title | Domain | Journal | Date |
+            | DOI | Title | Domain | Journal | publicationDate |
             |-----|-------|--------|---------|------|
             | 10.1234/abc | Example Paper | Biology | Nature | 2023-01-01 |
 
             ## Foundation Models
-            | DOI | Title | Domain | Journal | Date |
+            | DOI | Title | Domain | Journal | publicationDate |
             |-----|-------|--------|---------|------|
             | 10.5678/def | Another Paper | Computer Science | arXiv | 2022-12-12 |
         """),
@@ -113,7 +113,7 @@ class PaperAgent(Workflow):
                 'doi': paper.doi,
                 'title': paper.title,
                 'authors': paper.authors,
-                'date': paper.publicationDate,
+                'publicationDate': paper.publicationDate,
                 'url': paper.url,
                 'domain': paper_list[idx]['domain'],
                 'category': paper_list[idx]['category'],
