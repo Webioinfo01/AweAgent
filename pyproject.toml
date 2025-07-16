@@ -7,7 +7,9 @@ authors = [
     { name = "Webioinfo"}
 ]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "agno"
+]
 
 [project.scripts]
 aweagent = "aweagent:main"
