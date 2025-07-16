@@ -17,7 +17,12 @@ class PaperModel(BaseModel):
     domain: str = Field(description="The research domain of the paper")
     category: str = Field(description="The category of the paper")
     journal: str = Field(description="The journal of the paper")
+    authors: str = Field(description="The authors of the paper")
+    date: str = Field(description="The publication date of the paper")
+    url: str = Field(description="The url of the paper")
+    venue: str = Field(description="The venue of the paper")
 
+    
 class PaperListModel(BaseModel):
     paper_list: list[PaperModel] = Field(description="The list of papers")
 
@@ -82,8 +87,7 @@ class PaperAgent(Workflow):
     def run(self, msg):
         rep = self.searcher.run(msg)
         annotator_res = self.annotator.run(rep.content)
-        print(annotator_res.content)
-        readme = self.reporter.run(annotator_res.content)
+        readme = self.reporter.run(annotator_res.content.model_dump_json())
         with open("readme.md", "w", encoding="utf-8") as f:
             f.write(readme.content)
         return readme
