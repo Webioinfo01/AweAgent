@@ -56,7 +56,7 @@ class PaperAgent(Workflow):
             You are a paper annotator. you need to annotate the papers from a list of papers.
             You should annotate the papers based on:
             - The paper domain
-            - The paper category
+            - The paper category, if user provide a category list, you should annotate the papers based on the category list.
             
            Filter the papers that are published in the bad journal. keep papers which published in pre-print server.
         """),
