@@ -37,6 +37,13 @@ class PaperAgent(Workflow):
         instructions=dedent("""
             You are a paper search agent. you need to search the paper from the Semantic Scholar.
             return full output from tool calling.
+            if the paper is not found, return an empty list.
+            
+            Tool calling specification:
+            - search_papers:
+                - publication_date_or_year: [start_date, end_date]
+                        <start_date>:<end_date>, where dates are in the format YYYY-MM-DD, YYYY-MM, or YYYY	
+
         """),
         show_tool_calls=True,
     )
