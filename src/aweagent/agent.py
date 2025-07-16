@@ -56,7 +56,7 @@ class PaperAgent(Workflow):
             You are a paper annotator. you need to annotate the papers from a list of papers.
             You should annotate the papers based on:
             - The paper domain
-            - The paper category, if user provide a category list, you should annotate the papers based on the category list.
+            - The paper category, if user provide a category list, you MUST annotate the papers based on the provided category list.
             
            Filter the papers that are published in the bad journal. keep papers which published in pre-print server.
         """),
@@ -77,14 +77,14 @@ class PaperAgent(Workflow):
             示例输出：
 
             ## AI Agents
-            | DOI | Title | Domain | Journal | publicationDate |
-            |-----|-------|--------|---------|------|
-            | 10.1234/abc | Example Paper | Biology | Nature | 2023-01-01 |
+            | DOI | Title | Domain | Journal | publicationDate | Authors |
+            |-----|-------|--------|---------|------|------|
+            | 10.1234/abc | Example Paper | Biology | Nature | 2023-01-01 | John Doe | University of California, Los Angeles |
 
             ## Foundation Models
-            | DOI | Title | Domain | Journal | publicationDate |
-            |-----|-------|--------|---------|------|
-            | 10.5678/def | Another Paper | Computer Science | arXiv | 2022-12-12 |
+            | DOI | Title | Domain | Journal | publicationDate | Authors |
+            |-----|-------|--------|---------|------|------|
+            | 10.5678/def | Another Paper | Computer Science | arXiv | 2022-12-12 | Jane Smith | University of Oxford |
         """),
         markdown=True,
         show_tool_calls=True,
@@ -94,7 +94,10 @@ class PaperAgent(Workflow):
     def run(self, msg):
         rep = self.searcher.run(msg)
         annotator_res = self.annotator.run(rep.content)
-        paper_list = annotator_res.content.model_dump()['paper_list']
+        if isinstance(annotator_res.content, str):
+           paper_list = annotator_res.content
+        else:
+            paper_list = annotator_res.content.model_dump()['paper_list']
         query_paper_res = self.query_paper(paper_list)
         readme = self.reporter.run(str(query_paper_res))
         with open("readme.md", "w", encoding="utf-8") as f:

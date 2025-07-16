@@ -101,7 +101,7 @@ def search_papers(
         db_paper = Paper(
             paper_id=getattr(paper, 'paperId', None),
             title=getattr(paper, 'title', None),
-            authors=','.join([a['name'] for a in getattr(paper, 'authors', [])]) if hasattr(paper, 'authors') else None,
+            authors= str(paper.authors[-1]) if getattr(paper, 'authors', None) else None,
             year=getattr(paper, 'year', None),
             venue=getattr(paper, 'venue', None),
             url=getattr(paper, 'url', None),
