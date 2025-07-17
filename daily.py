@@ -4,11 +4,13 @@ import os
 
 
 os.environ["DATABASE_URL"] = "sqlite:///daily_report/SemanticScholar_papers.db"
-os.environ["DATABASE_FILTER_URL"] = "sqlite:///daily_report/SemanticScholar_papers_filter.db"
+os.environ["DATABASE_FILTER_URL"] = (
+    "sqlite:///daily_report/SemanticScholar_papers_filter.db"
+)
 
 
 today = datetime.now().strftime("%Y-%m-%d")
-yesterday = (datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d")
+yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 pa = PaperAgent()
 rep = pa.run(
     msg=f"""
