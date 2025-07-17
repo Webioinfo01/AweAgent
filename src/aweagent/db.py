@@ -40,6 +40,8 @@ class Paper(Base):
     publicationVenue = Column(String(500))
     raw_data = Column(Text)
     referenceCount = Column(Integer)
+    domain = Column(String(500))
+    category = Column(String(500))
 
 
 def get_database_session(database_url: str = None):

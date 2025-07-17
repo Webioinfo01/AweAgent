@@ -12,7 +12,7 @@ def search_papers(
     query: str,
     publication_types: Optional[List[Literal[
         "Review", "JournalArticle", "CaseReport", "ClinicalTrial", "Conference", "Dataset", "Editorial", "LettersAndComments", "MetaAnalysis", "News", "Study", "Book", "BookSection"
-    ]]] = None,
+    ]]] = ["Review", "JournalArticle"],
     open_access_pdf: bool | None = None,
     venue: list | None = None,
     fields_of_study: Optional[List[Literal[
@@ -89,38 +89,61 @@ def search_papers(
     # You'll need an instance of the client to request d
     # ata from the API
     sch = SemanticScholar(api_key=os.getenv("SEMANTICSCHOLAR_API_KEY"))
-    papers = sch.search_paper(query, publication_types=publication_types, open_access_pdf=open_access_pdf, venue=venue, fields_of_study=fields_of_study, fields=fields, publication_date_or_year=publication_date_or_year, min_citation_count=min_citation_count, limit=limit, bulk=bulk, sort=sort, match_title=match_title)
-
+    papers = sch.search_paper(
+        query, 
+        publication_types=publication_types, 
+        open_access_pdf=open_access_pdf, 
+        venue=venue, 
+        fields_of_study=fields_of_study, 
+        fields=fields, 
+        publication_date_or_year=publication_date_or_year, 
+        min_citation_count=min_citation_count, 
+        limit=limit, 
+        bulk=bulk, 
+        sort=sort, 
+        match_title=match_title)
+    papers = [paper for paper in papers.items if paper.authors is not None and paper.authors[-1].authorId is not None]
+    author_ids = [paper.authors[-1].authorId for paper in papers]
+    authors = sch.get_authors(author_ids=author_ids, fields=["name", "affiliations"])
+    author_to_paper = {author["authorId"]: author for author in authors}
     paper_ls = []
     session = get_database_session()
-    for idx, paper in enumerate(papers.items):
+    for idx, paper in enumerate(papers):
         if paper.externalIds is None:
             continue
         if paper.externalIds.get("DOI", None) is None:
             continue
-        db_paper = Paper(
-            paper_id=getattr(paper, 'paperId', None),
-            title=getattr(paper, 'title', None),
-            authors= str(paper.authors[-1]) if getattr(paper, 'authors', None) else None,
-            year=getattr(paper, 'year', None),
-            venue=getattr(paper, 'venue', None),
-            url=getattr(paper, 'url', None),
-            publication_types=",".join(paper.publicationTypes) if paper.publicationTypes else None,
-            journal=paper.journal.name if paper.journal else None,
-            doi=paper.externalIds.get("DOI", None) if paper.externalIds else None,
-            abstract=getattr(paper, 'abstract', None),
-            citationCount=getattr(paper, 'citationCount', None),
-            citationStyles=str(getattr(paper, 'citationStyles', None)),
-            citations=str(getattr(paper, 'citations', None)),
-            corpusId=getattr(paper, 'corpusId', None),
-            fieldsOfStudy=",".join(paper.fieldsOfStudy) if paper.fieldsOfStudy else None,
-            influentialCitationCount=getattr(paper, 'influentialCitationCount', None),
-            isOpenAccess=getattr(paper, 'isOpenAccess', None),
-            openAccessPdf=str(getattr(paper, 'openAccessPdf', None)),
-            publicationDate=getattr(paper, 'publicationDate', None),
-            referenceCount=getattr(paper, 'referenceCount', None),
-        )
-        session.add(db_paper)
+        if paper.authors is None:
+            continue
+        if paper.authors[-1].authorId is None:
+            authors = paper.authors[-1].name
+        else:
+            authors = author_to_paper[paper.authors[-1].authorId]
+        existing = session.query(Paper).filter_by(doi=paper.externalIds.get("DOI")).first()
+        if not existing:
+            db_paper = Paper(
+                paper_id=getattr(paper, 'paperId', None),
+                title=getattr(paper, 'title', None),
+                authors= str(authors),
+                year=getattr(paper, 'year', None),
+                venue=getattr(paper, 'venue', None),
+                url=getattr(paper, 'url', None),
+                publication_types=",".join(paper.publicationTypes) if paper.publicationTypes else None,
+                journal=paper.journal.name if paper.journal else None,
+                doi=paper.externalIds.get("DOI", None) if paper.externalIds else None,
+                abstract=getattr(paper, 'abstract', None),
+                citationCount=getattr(paper, 'citationCount', None),
+                citationStyles=str(getattr(paper, 'citationStyles', None)),
+                citations=str(getattr(paper, 'citations', None)),
+                corpusId=getattr(paper, 'corpusId', None),
+                fieldsOfStudy=",".join(paper.fieldsOfStudy) if paper.fieldsOfStudy else None,
+                influentialCitationCount=getattr(paper, 'influentialCitationCount', None),
+                isOpenAccess=getattr(paper, 'isOpenAccess', None),
+                openAccessPdf=str(getattr(paper, 'openAccessPdf', None)),
+                publicationDate=getattr(paper, 'publicationDate', None),
+                referenceCount=getattr(paper, 'referenceCount', None),
+            )
+            session.add(db_paper)
         paper_ls.append(f"""
                 <paper>
                     <doi>{paper.externalIds.get("DOI")}</doi>
@@ -130,5 +153,3 @@ def search_papers(
             """)
     session.commit()
     return "\n".join(paper_ls)
-
-
