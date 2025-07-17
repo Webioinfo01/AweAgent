@@ -36,8 +36,7 @@ class PaperAgent(Workflow):
             Tool calling specification:
             - search_papers:
                 - query (str): Plain-text search query string. don't be confused with the predefined category list.
-                - publication_date_or_year: [start_date, end_date]
-                        <start_date>:<end_date>, where dates are in the format YYYY-MM-DD, YYYY-MM, or YYYY	
+                - publication_date_or_year: "start_date:end_date", "start_date:" or ":end_date", where dates are in the format YYYY-MM-DD, YYYY-MM, or YYYY	
             
             you should return result following template:
             <output>
