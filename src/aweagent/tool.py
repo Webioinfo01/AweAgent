@@ -103,6 +103,8 @@ def search_papers(
         sort=sort, 
         match_title=match_title)
     papers = [paper for paper in papers.items if paper.authors is not None and paper.authors[-1].authorId is not None]
+    if len(papers) == 0:
+        return "No papers found"
     author_ids = [paper.authors[-1].authorId for paper in papers]
     authors = sch.get_authors(author_ids=author_ids, fields=["name", "affiliations"])
     author_to_paper = {author["authorId"]: author for author in authors}

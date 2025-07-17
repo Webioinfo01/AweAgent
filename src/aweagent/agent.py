@@ -101,26 +101,22 @@ class PaperAgent(Workflow):
         show_tool_calls=True,
     )
 
-
     def run(self, msg):
         rep = self.searcher.run(msg)
-        print(rep.content)
         annotator_res = self.annotator.run(rep.content)
         while isinstance(annotator_res.content, str):
             annotator_res = self.annotator.run(annotator_res.content)
         paper_list = annotator_res.content.model_dump()['paper_list']
         query_paper_res = self.query_paper(paper_list)
-        readme = self.reporter.run(str(query_paper_res))
-        with open("readme.md", "w", encoding="utf-8") as f:
-            f.write(readme.content)
-        return readme
+        return self.reporter.run(str(query_paper_res))
 
     def query_paper(self, paper_list):
         from .db import get_database_session, Paper
 
         doi_list = [i['doi'] for i in paper_list]
         session = get_database_session()
-        session_filter = get_database_session("sqlite:///SemanticScholar_papers_filter.db")
+        database_filter_url = os.getenv("DATABASE_FILTER_URL", "sqlite:///SemanticScholar_papers_filter.db")
+        session_filter = get_database_session(database_filter_url)
         papers = session.query(Paper).filter(Paper.doi.in_(doi_list)).all()
         result = {}
         doi_to_paper = {paper.doi: paper for paper in papers}
@@ -151,4 +147,3 @@ class PaperAgent(Workflow):
                     journal=paper.journal
                 ))
         return result
-        
