@@ -1,22 +1,19 @@
-import pandas as pd
-from pathlib import Path
 from agno.agent import Agent
 from agno.models.deepseek import DeepSeek
 from agno.workflow import Workflow
-from agno.run.response import RunResponse
 
 from textwrap import dedent
 from pydantic import BaseModel, Field
-from typing import Literal
 from .tool import search_papers
 import os
+
 
 class PaperModel(BaseModel):
     doi: str = Field(description="The paper DOI")
     domain: str = Field(description="The research domain of the paper")
     category: str = Field(description="The category of the paper")
 
-    
+
 class PaperListModel(BaseModel):
     paper_list: list[PaperModel] = Field(description="The list of papers")
     category_list: list[str] = Field(description="The list of categories")
@@ -24,8 +21,8 @@ class PaperListModel(BaseModel):
 
 model = DeepSeek(id="deepseek-chat")
 
-class PaperAgent(Workflow):
 
+class PaperAgent(Workflow):
     searcher = Agent(
         name="searcher",
         model=model,
@@ -106,44 +103,50 @@ class PaperAgent(Workflow):
         annotator_res = self.annotator.run(rep.content)
         while isinstance(annotator_res.content, str):
             annotator_res = self.annotator.run(annotator_res.content)
-        paper_list = annotator_res.content.model_dump()['paper_list']
+        paper_list = annotator_res.content.model_dump()["paper_list"]
         query_paper_res = self.query_paper(paper_list)
         return self.reporter.run(str(query_paper_res))
 
     def query_paper(self, paper_list):
         from .db import get_database_session, Paper
 
-        doi_list = [i['doi'] for i in paper_list]
+        doi_list = [i["doi"] for i in paper_list]
         session = get_database_session()
-        database_filter_url = os.getenv("DATABASE_FILTER_URL", "sqlite:///SemanticScholar_papers_filter.db")
+        database_filter_url = os.getenv(
+            "DATABASE_FILTER_URL", "sqlite:///SemanticScholar_papers_filter.db"
+        )
         session_filter = get_database_session(database_filter_url)
         papers = session.query(Paper).filter(Paper.doi.in_(doi_list)).all()
         result = {}
         doi_to_paper = {paper.doi: paper for paper in papers}
         for idx, doi in enumerate(doi_list):
             paper = doi_to_paper.get(doi)
-            result.setdefault(paper_list[idx]['category'], []).append({
-                'doi': paper.doi,
-                'title': paper.title,
-                'authors': paper.authors,
-                'publicationDate': paper.publicationDate,
-                'url': paper.url,
-                'domain': paper_list[idx]['domain'],
-                'category': paper_list[idx]['category'],
-                'venue': paper.venue,
-                'journal': paper.journal
-            })
+            result.setdefault(paper_list[idx]["category"], []).append(
+                {
+                    "doi": paper.doi,
+                    "title": paper.title,
+                    "authors": paper.authors,
+                    "publicationDate": paper.publicationDate,
+                    "url": paper.url,
+                    "domain": paper_list[idx]["domain"],
+                    "category": paper_list[idx]["category"],
+                    "venue": paper.venue,
+                    "journal": paper.journal,
+                }
+            )
             existing = session_filter.query(Paper).filter_by(doi=doi).first()
             if not existing:
-                session_filter.add(Paper(
-                    doi=doi,
-                    title=paper.title,
-                    authors=paper.authors,
-                    publicationDate=paper.publicationDate,
-                    url=paper.url,
-                    domain=paper_list[idx]['domain'],
-                    category=paper_list[idx]['category'],
-                    venue=paper.venue,
-                    journal=paper.journal
-                ))
+                session_filter.add(
+                    Paper(
+                        doi=doi,
+                        title=paper.title,
+                        authors=paper.authors,
+                        publicationDate=paper.publicationDate,
+                        url=paper.url,
+                        domain=paper_list[idx]["domain"],
+                        category=paper_list[idx]["category"],
+                        venue=paper.venue,
+                        journal=paper.journal,
+                    )
+                )
         return result
