@@ -93,6 +93,9 @@ class PaperAgent(Workflow):
             | DOI | Title | Domain | Journal | publicationDate | Authors | Affiliations |
             |-----|-------|--------|---------|------|------|------|
             | 10.5678/def | Another Paper | Computer Science | arXiv | 2022-12-12 | Jane Smith | University of Oxford |
+                            
+            WARNING:
+            You should return directly markdown content. Not return ```markdown content```
         """),
         markdown=True,
         show_tool_calls=True,
