@@ -21,10 +21,17 @@ from aweagent.agent import PaperAgent
 
 pa = PaperAgent()
 rep = pa.run(
-    msg="""查询 2025-07-01 到 2025-07-15  AI agent|large language model|foundation model 的论文, 100篇,
-    category: ["AI agent", "AI Tools", "Foundation Models", "Databases", "Benchmarks", "Reviews"],
-    fieds: "paperId",  "externalIds", "url", "title", "abstract", "venue", "publicationVenue", "publicationTypes", "publicationDate", "journal", "authors", "citations"
-    """
+    msg="""
+    查询论文：
+     query: AI agent|large language model|foundation model
+     publication_date: 2025-07-01 到 2025-07-15
+     limit: 100
+     fields: "paperId",  "externalIds", "url", "title", "abstract", "venue", "publicationVenue", "publicationTypes", "publicationDate", "journal", "authors", "citations"
+     fields_of_study: "Medicine",  "Biology"
+    
+    pre-defined category: ["AI agent", "AI Tools", "Foundation Models", "Databases", "Benchmarks", "Reviews"]
     )
+    """
+)
 pprint_run_response(rep, markdown=True)
 ```
