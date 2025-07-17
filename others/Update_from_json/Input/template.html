@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awesome AI Meets Biology</title>
+    <meta name="description" content="A comprehensive survey of AI applications in biology, bioinformatics, and biomedical research - covering foundation models, AI agents, tools, and more.">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .badges {
+            margin-top: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            margin: 0.25rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .stats-bar {
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .visualization-section {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .chart-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 400px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .search-container {
+            background: white;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .nav-tabs {
+            background: white;
+            border-bottom: 1px solid #eee;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0 1rem;
+        }
+
+        .nav-tab {
+            display: inline-block;
+            padding: 1rem 1.5rem;
+            color: #666;
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover,
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-count {
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .paper-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .paper-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .paper-link:hover {
+            text-decoration: underline;
+        }
+
+        .team-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .domain-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin: 0.1rem;
+        }
+
+        .venue-badge {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .github-stars {
+            display: inline-block;
+            background: #f6f8fa;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            color: #666;
+            margin-left: 0.5rem;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-links {
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .footer-link:hover {
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .chart-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tab {
+                padding: 0.75rem 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* GitHub Star Button */
+        .github-star-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .github-star-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #444 0%, #666 100%);
+            color: white;
+            text-decoration: none;
+        }
+
+        .github-star-button .star-icon {
+            font-size: 16px;
+            color: #ffd700;
+            transition: transform 0.3s ease;
+        }
+
+        .github-star-button:hover .star-icon {
+            transform: scale(1.2) rotate(20deg);
+        }
+
+        .github-star-button .star-text {
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .github-star-button.pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .github-star-button {
+                top: 15px;
+                right: 15px;
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+  </head>
+<body>
+    <!-- GitHub Star Button -->
+    <a href="https://github.com/webioinfo01/Awesome-AI-Meets-Biology" 
+       class="github-star-button" 
+       target="_blank" 
+       title="Star this project on GitHub">
+        <i class="fas fa-star star-icon"></i>
+        <span class="star-text">Star on GitHub</span>
+    </a>
+
+    <header class="header">
+        <div class="container">
+            <h1><i class="fas fa-dna"></i> Awesome AI Meets Biology</h1>
+            <p>A comprehensive survey of AI applications in biology, bioinformatics, and biomedical research</p>
+            <div class="badges">
+                <span class="badge"><i class="fab fa-github"></i> Open Source</span>
+                <span class="badge"><i class="fas fa-microscope"></i> Research</span>
+                <span class="badge"><i class="fas fa-robot"></i> AI/ML</span>
+                <span class="badge"><i class="fas fa-heartbeat"></i> Biology</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-count">94</div>
+                    <div class="stat-label">Total Projects</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">AI Agents</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">45</div>
+                    <div class="stat-label">Foundation Models</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">AI Tools</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Databases</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Benchmarks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Reviews</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="visualization-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 1rem; color: #333;">Project Statistics</h2>
+            <div class="chart-container">
+                <div class="chart-box">
+                    <h3 class="chart-title">Projects by Category</h3>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3 class="chart-title">Projects by Year</h3>
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search papers, teams, domains, or venues..." id="searchInput">
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav-tabs">
+        <div class="container">
+            <a href="#all-projects" class="nav-tab active" data-section="all-projects">
+                <i class="fas fa-list"></i> All Projects (94)
+            </a>
+            <a href="#ai-agents" class="nav-tab" data-section="ai-agents">
+                <i class="fas fa-robot"></i> AI Agents (23)
+            </a>
+            <a href="#foundation-models" class="nav-tab" data-section="foundation-models">
+                <i class="fas fa-brain"></i> Foundation Models (45)
+            </a>
+            <a href="#ai-tools" class="nav-tab" data-section="ai-tools">
+                <i class="fas fa-tools"></i> AI Tools (5)
+            </a>
+            <a href="#databases" class="nav-tab" data-section="databases">
+                <i class="fas fa-database"></i> Databases (9)
+            </a>
+            <a href="#benchmarks" class="nav-tab" data-section="benchmarks">
+                <i class="fas fa-chart-bar"></i> Benchmarks (4)
+            </a>
+            <a href="#reviews" class="nav-tab" data-section="reviews">
+                <i class="fas fa-book"></i> Reviews (8)
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading awesome AI × Biology projects...</p>
+            </div>
+
+            <div id="content" class="hidden">
+                <!-- All Projects Section -->
+                <section class="section" id="all-projects">
+                    <div class="section-header">
+                        <i class="fas fa-list"></i>
+                        <h2 class="section-title">All Projects</h2>
+                        <span class="section-count">94 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Category</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-projects-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- AI Agents Section -->
+                <section class="section" id="ai-agents">
+                    <div class="section-header">
+                        <i class="fas fa-robot"></i>
+                        <h2 class="section-title">AI Agents</h2>
+                        <span class="section-count">23 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ai-agents-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Foundation Models Section -->
+                <section class="section" id="foundation-models">
+                    <div class="section-header">
+                        <i class="fas fa-brain"></i>
+                        <h2 class="section-title">Foundation Models</h2>
+                        <span class="section-count">45 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="foundation-models-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- AI Tools Section -->
+                <section class="section" id="ai-tools">
+                    <div class="section-header">
+                        <i class="fas fa-tools"></i>
+                        <h2 class="section-title">AI Tools</h2>
+                        <span class="section-count">5 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ai-tools-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Databases Section -->
+                <section class="section" id="databases">
+                    <div class="section-header">
+                        <i class="fas fa-database"></i>
+                        <h2 class="section-title">Databases/Simulation</h2>
+                        <span class="section-count">9 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="databases-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Benchmarks Section -->
+                <section class="section" id="benchmarks">
+                    <div class="section-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <h2 class="section-title">Benchmarks</h2>
+                        <span class="section-count">4 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="benchmarks-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Reviews Section -->
+                <section class="section" id="reviews">
+                    <div class="section-header">
+                        <i class="fas fa-book"></i>
+                        <h2 class="section-title">Reviews</h2>
+                        <span class="section-count">8 projects</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Team</th>
+                                    <th>Team Website</th>
+                                    <th>Affiliation</th>
+                                    <th>Domain</th>
+                                    <th>Venue</th>
+                                    <th>Paper URL</th>
+                                    <th>Code URL</th>
+                                    <th>GitHub Stars</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviews-tbody">
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/webioinfo01/Awesome-AI-Meets-Biology" class="footer-link">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://github.com/Webioinfo01/Awesome-AI-Meets-Biology" class="footer-link">
+                    <i class="fas fa-file-text"></i> README
+                </a>
+                <a href="yc47680@um.edu.mo" class="footer-link">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+            </div>
+            <p>&copy; 2025 Awesome AI Meets Biology. Licensed under MPL-2.0.</p>
+        </div>
+    </footer>
+
+    
+    <script>
+        // Full dataset from the README
+        const projectData = {
+            "databases": [
+        {
+            "year": "2025.08",
+            "title": "Drug Response Omics association MAp (DROMA, \u5353\u739b)",
+            "team": "",
+            "team website": "",
+            "affiliation": "",
+            "domain": "Biomarker discovery, Drug prediction,(18 projects with 2,600+ samples and 56,000+ drugs, with full ecosystem)",
+            "venue": "",
+            "paperUrl": "",
+            "codeUrl": "https://github.com/mugpeng/DROMA",
+            "githubStars": "https://img.shields.io/github/stars/mugpeng/DROMA"
+        },
+        {
+            "year": "2025.06",
+            "title": "X-Atlas/Orion: Genome-wide Perturb-seq Datasets via a Scalable Fix-Cryopreserve Platform for Training Dose-Dependent Biological Foundation Models",
+            "team": "",
+            "team website": "",
+            "affiliation": "",
+            "domain": "Genome-wide Perturb-seq Datasets",
+            "venue": "bioRxiv",
+            "paperUrl": "https://www.biorxiv.org/content/10.1101/2025.06.11.659105v1",
+            "codeUrl": "https://doi.org/10.25452/figshare.plus.29190726",
+            "githubStars": ""
+        },
+        {
+            "year": "2025.04",
+            "title": "scMultiSim: simulation of single-cell multi-omics and spatial data guided by gene regulatory networks and cell\u2013cell interactions",
+            "team": "",
+            "team website": "",
+            "affiliation": "",
+            "domain": "Simulation of single-cell multi-omics and spatial data",
+            "venue": "Nature Methods",
+            "paperUrl": "https://www.nature.com/articles/s41592-025-02651-0",
+            "codeUrl": "https://github.com/ZhangLabGT/scMultiSim/",
+            "githubStars": "https://img.shields.io/github/stars/ZhangLabGT/scMultiSim"
+        },
+        {
+            "year": "2025.03",
+            "title": "RxRx3-core: Benchmarking drug-target interactions in High-Content Microscopy",
+            "team": "Recursion(Imran S. Haque)",
+            "team website": "https://www.rxrx.ai/",
+            "affiliation": "",
+            "domain": "microscopy perturbation data",
+            "venue": "ICLR 2025",
+            "paperUrl": "https://arxiv.org/abs/2503.20158v2",
+            "codeUrl": "https://www.rxrx.ai/datasets",
+            "githubStars": ""
+        },
+        {
+            "year": "2025.02",
+            "title": "scBaseCount: an AI agent-curated, uniformly processed, and continually expanding single cell data repository",
+            "team": "Arc Institute(Yusuf H. Roohani)",
+            "team website": "https://github.com/ArcInstitute",
+            "affiliation": "",
+            "domain": "preprocess scRNA data",
+            "venue": "bioRxiv",
+            "paperUrl": "https://www.biorxiv.org/content/10.1101/2025.02.27.640494v2",
+            "codeUrl": "https://github.com/ArcInstitute/SRAgent",
+            "githubStars": "https://img.shields.io/github/stars/ArcInstitute/SRAgent"
+        },
+        {
+            "year": "2025.02",
+            "title": "Tahoe-100M: A Giga-Scale Single-Cell Perturbation Atlas for Context-Dependent Gene Function and Cellular Modeling",
+            "team": "tahoebio(but in arc's repository)",
+            "team website": "https://github.com/ArcInstitute",
+            "affiliation": "",
+            "domain": "Drug perturbation scRNA",
+            "venue": "bioRxiv",
+            "paperUrl": "https://www.biorxiv.org/content/10.1101/2025.02.20.639398v3",
+            "codeUrl": "https://github.com/ArcInstitute/arc-virtual-cell-atlas",
+            "githubStars": "https://img.shields.io/github/stars/ArcInstitute/arc-virtual-cell-atlas"
+        },
+        {
+            "year": "2024.06",
+            "title": "Signals in the Cells: Multimodal and Contextualized Machine Learning Foundations for Therapeutics",
+            "team": "Marinka Zitnik",
+            "team website": "https://zitniklab.hms.harvard.edu/",
+            "affiliation": "",
+            "domain": "Drug Discovery (Therapeutic science, 66 datasets)",
+            "venue": "bioRxiv",
+            "paperUrl": "https://www.biorxiv.org/content/10.1101/2024.06.12.598655v3",
+            "codeUrl": "https://tdcommons.ai/",
+            "githubStars": "https://img.shields.io/github/stars/mims-harvard/TDC"
+        },
+        {
+            "year": "2024.04",
+            "title": "Three million images and morphological profiles of cells treated with matched chemical and genetic perturbations (Cell Painting Gallery)",
+            "team": "Broad Institute(Anne E. Carpenter)",
+            "team website": "https://github.com/broadinstitute",
+            "affiliation": "",
+            "domain": "phenotype morphological responses to perturbation",
+            "venue": "Nature Methods",
+            "paperUrl": "https://www.nature.com/articles/s41592-024-02241-6",
+            "codeUrl": "https://github.com/broadinstitute/cellpainting-gallery/",
+            "githubStars": "https://img.shields.io/github/stars/broadinstitute/cellpainting-gallery"
+        },
+        {
+            "year": "2024.01",
+            "title": "scPerturb: harmonized single-cell perturbation data",
+            "team": "",
+            "team website": "",
+            "affiliation": "",
+            "domain": "scRNA perturbation(44 public datasets, drugs and genes)",
+            "venue": "Nature Methods",
+            "paperUrl": "https://www.nature.com/articles/s41592-023-02144-y",
+            "codeUrl": "https://github.com/sanderlab/scPerturb/",
+            "githubStars": "https://img.shields.io/github/stars/sanderlab/scPerturb"
+        }
+    ]
+                };
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
+        const loading = document.getElementById('loading');
+        const content = document.getElementById('content');
+
+        // Charts
+        let categoryChart, yearChart;
+
+        // Initialize the page
+        function init() {
+            // Simulate loading time
+            setTimeout(() => {
+                loading.classList.add('hidden');
+                content.classList.remove('hidden');
+                populateData();
+                initCharts();
+                showDefaultSection(); // Show all projects by default
+            }, 1000);
+
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            // Search functionality
+            searchInput.addEventListener('input', handleSearch);
+
+            // Navigation tabs
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = tab.getAttribute('data-section');
+                    showSection(sectionId);
+                    
+                    // Update active tab
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                });
+            });
+
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        function populateData() {
+            // Populate each section with data
+            Object.keys(projectData).forEach(sectionKey => {
+                const tbody = document.getElementById(`${sectionKey}-tbody`);
+                if (tbody) {
+                    tbody.innerHTML = projectData[sectionKey].map(item => createTableRow(item, sectionKey)).join('');
+                }
+            });
+
+            // Populate all projects section
+            populateAllProjects();
+        }
+
+        function populateAllProjects() {
+            // Combine all projects from all categories
+            let allProjects = [];
+            Object.keys(projectData).forEach(categoryKey => {
+                projectData[categoryKey].forEach(project => {
+                    allProjects.push({
+                        ...project,
+                        category: getCategoryDisplayName(categoryKey)
+                    });
+                });
+            });
+
+            // Sort by year (newest first)
+            allProjects.sort((a, b) => {
+                const yearA = parseFloat(a.year);
+                const yearB = parseFloat(b.year);
+                return yearB - yearA;
+            });
+
+            // Populate the all projects table
+            const tbody = document.getElementById('all-projects-tbody');
+            if (tbody) {
+                tbody.innerHTML = allProjects.map(item => createAllProjectsTableRow(item)).join('');
+            }
+        }
+
+        function getCategoryDisplayName(categoryKey) {
+            const categoryNames = {
+                'ai-agents': 'AI Agents',
+                'foundation-models': 'Foundation Models',
+                'ai-tools': 'AI Tools',
+                'databases': 'Databases',
+                'benchmarks': 'Benchmarks',
+                'reviews': 'Reviews'
+            };
+            return categoryNames[categoryKey] || categoryKey;
+        }
+
+        function createTableRow(item, sectionType) {
+            // Handle both full URLs and repo paths for GitHub stars
+            const githubStarsImg = item.githubStars ? 
+                (item.githubStars.startsWith('http') ? 
+                    `<img src="${item.githubStars}" alt="GitHub Stars" class="github-stars">` :
+                    `<img src="https://img.shields.io/github/stars/${item.githubStars}" alt="GitHub Stars" class="github-stars">`) : '';
+            
+            // All categories now use the same comprehensive column structure
+            return `
+                <tr>
+                    <td>${item.year || ''}</td>
+                    <td>
+                        <div class="paper-title">${item.title || ''}</div>
+                    </td>
+                    <td><span class="team-info">${item.team || ''}</span></td>
+                    <td>${item['team website'] ? `<a href="${item['team website']}" class="paper-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Link
+                    </a>` : ''}</td>
+                    <td><span class="team-info">${item.affiliation || ''}</span></td>
+                    <td><span class="domain-tag">${item.domain || ''}</span></td>
+                    <td><span class="venue-badge">${item.venue || ''}</span></td>
+                    <td>${item.paperUrl ? `<a href="${item.paperUrl}" class="paper-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Paper
+                    </a>` : ''}</td>
+                    <td>${item.codeUrl ? `<a href="${item.codeUrl}" class="paper-link" target="_blank">
+                        <i class="fab fa-github"></i> Code
+                    </a>` : ''}</td>
+                    <td>${githubStarsImg}</td>
+                </tr>
+            `;
+        }
+
+        function createAllProjectsTableRow(item) {
+            // Handle both full URLs and repo paths for GitHub stars
+            const githubStarsImg = item.githubStars ? 
+                (item.githubStars.startsWith('http') ? 
+                    `<img src="${item.githubStars}" alt="GitHub Stars" class="github-stars">` :
+                    `<img src="https://img.shields.io/github/stars/${item.githubStars}" alt="GitHub Stars" class="github-stars">`) : '';
+            
+            return `
+                <tr>
+                    <td>${item.year || ''}</td>
+                    <td>
+                        <div class="paper-title">${item.title || ''}</div>
+                    </td>
+                    <td><span class="team-info">${item.team || ''}</span></td>
+                    <td>${item['team website'] ? `<a href="${item['team website']}" class="paper-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Link
+                    </a>` : ''}</td>
+                    <td><span class="team-info">${item.affiliation || ''}</span></td>
+                    <td><span class="domain-tag">${item.domain || ''}</span></td>
+                    <td><span class="venue-badge" style="background: #e8f5e8; color: #2e7d32;">${item.category || ''}</span></td>
+                    <td><span class="venue-badge">${item.venue || ''}</span></td>
+                    <td>${item.paperUrl ? `<a href="${item.paperUrl}" class="paper-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Paper
+                    </a>` : ''}</td>
+                    <td>${item.codeUrl ? `<a href="${item.codeUrl}" class="paper-link" target="_blank">
+                        <i class="fab fa-github"></i> Code
+                    </a>` : ''}</td>
+                    <td>${githubStarsImg}</td>
+                </tr>
+            `;
+        }
+
+        function initCharts() {
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            categoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ["AI Agents", "Foundation models", "AI Tools", "Databases/Simulation", "Benchmarks", "Reviews"],
+                    datasets: [{
+                        data: [23, 45, 5, 9, 4, 8],
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#f5576c',
+                            '#4facfe',
+                            '#43e97b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Year Chart
+            const yearCtx = document.getElementById('yearChart').getContext('2d');
+            yearChart = new Chart(yearCtx, {
+                type: 'bar',
+                data: {
+                    labels: ["2021", "2023", "2024", "2025"],
+                    datasets: [{
+                        label: 'Projects',
+                        data: [1, 4, 33, 56],
+                        backgroundColor: '#667eea',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Update nav tabs and section headers after charts are created
+            const stats = {"all-projects": 94, "ai-agents": 23, "foundation-models": 45, "ai-tools": 5, "databases": 9, "benchmarks": 4, "reviews": 8};
+            Object.entries(stats).forEach(([key, count]) => {
+                // Update nav tabs
+                const navTab = document.querySelector(`.nav-tab[data-section='${key}']`);
+                if (navTab) {
+                    navTab.textContent = navTab.textContent.replace(/\(\d+\)/, `(${count})`);
+                }
+                // Update section headers
+                const sectionCount = document.querySelector(`#${key} .section-count`);
+                if (sectionCount) {
+                    sectionCount.textContent = `${count} projects`;
+                }
+            });
+        }
+
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const allRows = document.querySelectorAll('.data-table tbody tr');
+            
+            allRows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        // Show all projects section by default
+        function showDefaultSection() {
+            showSection('all-projects');
+        }
+
+        // Add some engaging behavior to the star button
+        function initStarButton() {
+            const starButton = document.querySelector('.github-star-button');
+            
+            // Add a subtle pulse animation after a delay to draw attention
+            setTimeout(() => {
+                starButton.classList.add('pulse');
+                // Remove pulse after a few cycles
+                setTimeout(() => {
+                    starButton.classList.remove('pulse');
+                }, 6000);
+            }, 3000);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            initStarButton();
+        });
+    </script>
+    
+</body>
+</html> 
