@@ -2,7 +2,7 @@ name: Scheduled Paper Query
 
 on:
   schedule:
-    - cron: "15 8 * * *" # Runs every day at 08:15 UTC
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
