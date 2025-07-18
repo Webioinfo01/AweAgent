@@ -38,6 +38,8 @@ class PaperAgent(Workflow):
                 - query (str): Plain-text search query string. don't be confused with the predefined category list.
                 - publication_date_or_year: "start_date:end_date", "start_date:" or ":end_date", where dates are in the format YYYY-MM-DD, YYYY-MM, or YYYY	
             
+            Note: when get the search_papers' result, you should exclude the papers that are not related to the user input query keywords.
+                            
             you should return result following template:
             <output>
                 <search_papers_response>
@@ -151,4 +153,5 @@ class PaperAgent(Workflow):
                         journal=paper.journal,
                     )
                 )
+        session_filter.commit()
         return result

@@ -10,7 +10,7 @@ os.environ["DATABASE_FILTER_URL"] = (
 
 
 today = datetime.now().strftime("%Y-%m-%d")
-yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+yesterday = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 pa = PaperAgent()
 rep = pa.run(
     msg=f"""
@@ -21,7 +21,7 @@ rep = pa.run(
      fields: "paperId",  "externalIds", "url", "title", "abstract", "venue", "publicationVenue", "publicationTypes", "publicationDate", "journal", "authors", "citations"
      fields_of_study: "Medicine",  "Biology"
     
-    pre-defined category: ["AI agent", "AI Tools", "Foundation Models", "Databases", "Benchmarks", "Reviews"]
+    pre-defined category: ["ai-agents", "ai-tools", "foundation-models", "databases", "benchmarks", "reviews"]
     """
 )
 
