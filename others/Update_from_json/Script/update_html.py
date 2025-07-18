@@ -199,44 +199,157 @@ def update_html_stats(html_path: str, project_data: Dict) -> bool:
     benchmarks = len(project_data.get('benchmarks', []))
     reviews = len(project_data.get('reviews', []))
     
-    # Update total projects count
+    print(f"Updating statistics: Total={total_projects}, AI Agents={ai_agents}, Foundation Models={foundation_models}, AI Tools={ai_tools}, Databases={databases}, Benchmarks={benchmarks}, Reviews={reviews}")
+    
+    # Update total projects count in stats bar
     content = re.sub(
         r'(<div class="stat-number" id="total-count">)\d+(</div>)',
-        f'\\1{total_projects}\\2',
+        f'\\g<1>{total_projects}\\g<2>',
         content
     )
     
+    # Update stats grid numbers with more precise patterns
+    content = re.sub(
+        r'(<div class="stat-number">)\d+(</div>\s*<div class="stat-label">AI Agents</div>)',
+        f'\\g<1>{ai_agents}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(<div class="stat-number">)\d+(</div>\s*<div class="stat-label">Foundation Models</div>)',
+        f'\\g<1>{foundation_models}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(<div class="stat-number">)\d+(</div>\s*<div class="stat-label">AI Tools</div>)',
+        f'\\g<1>{ai_tools}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(<div class="stat-number">)\d+(</div>\s*<div class="stat-label">Databases</div>)',
+        f'\\g<1>{databases}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(<div class="stat-number">)\d+(</div>\s*<div class="stat-label">Benchmarks</div>)',
+        f'\\g<1>{benchmarks}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(<div class="stat-number">)\d+(</div>\s*<div class="stat-label">Reviews</div>)',
+        f'\\g<1>{reviews}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    
     # Update navigation tab counts
-    nav_replacements = [
-        (r'(All Projects \()\d+(\))', f'\\1{total_projects}\\2'),
-        (r'(AI Agents \()\d+(\))', f'\\1{ai_agents}\\2'),
-        (r'(Foundation Models \()\d+(\))', f'\\1{foundation_models}\\2'),
-        (r'(AI Tools \()\d+(\))', f'\\1{ai_tools}\\2'),
-        (r'(Databases \()\d+(\))', f'\\1{databases}\\2'),
-        (r'(Benchmarks \()\d+(\))', f'\\1{benchmarks}\\2'),
-        (r'(Reviews \()\d+(\))', f'\\1{reviews}\\2'),
-    ]
+    content = re.sub(r'(All Projects \()\d+(\))', f'\\g<1>{total_projects}\\g<2>', content)
+    content = re.sub(r'(AI Agents \()\d+(\))', f'\\g<1>{ai_agents}\\g<2>', content)
+    content = re.sub(r'(Foundation Models \()\d+(\))', f'\\g<1>{foundation_models}\\g<2>', content)
+    content = re.sub(r'(AI Tools \()\d+(\))', f'\\g<1>{ai_tools}\\g<2>', content)
+    content = re.sub(r'(Databases \()\d+(\))', f'\\g<1>{databases}\\g<2>', content)
+    content = re.sub(r'(Benchmarks \()\d+(\))', f'\\g<1>{benchmarks}\\g<2>', content)
+    content = re.sub(r'(Reviews \()\d+(\))', f'\\g<1>{reviews}\\g<2>', content)
     
-    for pattern, replacement in nav_replacements:
-        content = re.sub(pattern, replacement, content)
+    # Update section headers in main content (simpler approach)
+    # Update section counts by finding the pattern and replacing the number
+    content = re.sub(
+        r'(<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{total_projects}\\g<2>',
+        content
+    )
     
-    # Update chart data
-    chart_data_pattern = r'(data:\s*\[)[^\]]+(\])'
-    new_chart_data = f'\\1{ai_agents}, {foundation_models}, {ai_tools}, {databases}, {benchmarks}, {reviews}\\2'
-    content = re.sub(chart_data_pattern, new_chart_data, content)
+    # Update individual section counts with more specific patterns
+    content = re.sub(
+        r'(id="all-projects".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{total_projects}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(id="ai-agents".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{ai_agents}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(id="foundation-models".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{foundation_models}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(id="ai-tools".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{ai_tools}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(id="databases".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{databases}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(id="benchmarks".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{benchmarks}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
+    content = re.sub(
+        r'(id="reviews".*?<span class="section-count">)\d+( projects</span>)',
+        f'\\g<1>{reviews}\\g<2>',
+        content,
+        flags=re.DOTALL
+    )
     
-    # Update stats grid numbers
-    stats_patterns = [
-        (r'(<div class="stat-number">)23(</div>\s*<div class="stat-label">AI Agents</div>)', f'\\1{ai_agents}\\2'),
-        (r'(<div class="stat-number">)45(</div>\s*<div class="stat-label">Foundation Models</div>)', f'\\1{foundation_models}\\2'),
-        (r'(<div class="stat-number">)5(</div>\s*<div class="stat-label">AI Tools</div>)', f'\\1{ai_tools}\\2'),
-        (r'(<div class="stat-number">)9(</div>\s*<div class="stat-label">Databases</div>)', f'\\1{databases}\\2'),
-        (r'(<div class="stat-number">)4(</div>\s*<div class="stat-label">Benchmarks</div>)', f'\\1{benchmarks}\\2'),
-        (r'(<div class="stat-number">)8(</div>\s*<div class="stat-label">Reviews</div>)', f'\\1{reviews}\\2'),
-    ]
+    # Update chart data in JavaScript
+    content = re.sub(
+        r'(data:\s*\[)[^\]]+(\])',
+        f'\\g<1>{ai_agents}, {foundation_models}, {ai_tools}, {databases}, {benchmarks}, {reviews}\\g<2>',
+        content
+    )
     
-    for pattern, replacement in stats_patterns:
-        content = re.sub(pattern, replacement, content, flags=re.DOTALL)
+    # Update the stats object in JavaScript at the end of the script (if it exists)
+    content = re.sub(
+        r'(const stats = \{[^}]*"all-projects":\s*)\d+',
+        f'\\g<1>{total_projects}',
+        content
+    )
+    content = re.sub(
+        r'(const stats = \{[^}]*"ai-agents":\s*)\d+',
+        f'\\g<1>{ai_agents}',
+        content
+    )
+    content = re.sub(
+        r'(const stats = \{[^}]*"foundation-models":\s*)\d+',
+        f'\\g<1>{foundation_models}',
+        content
+    )
+    content = re.sub(
+        r'(const stats = \{[^}]*"ai-tools":\s*)\d+',
+        f'\\g<1>{ai_tools}',
+        content
+    )
+    content = re.sub(
+        r'(const stats = \{[^}]*"databases":\s*)\d+',
+        f'\\g<1>{databases}',
+        content
+    )
+    content = re.sub(
+        r'(const stats = \{[^}]*"benchmarks":\s*)\d+',
+        f'\\g<1>{benchmarks}',
+        content
+    )
+    content = re.sub(
+        r'(const stats = \{[^}]*"reviews":\s*)\d+',
+        f'\\g<1>{reviews}',
+        content
+    )
     
     # Write updated content
     try:
@@ -260,7 +373,7 @@ def main():
     parser.add_argument('--force', action='store_true',
                        help='Force update even if no changes detected')
     parser.add_argument('--update-stats', action='store_true',
-                       help='Also update statistics in HTML')
+                       help='(Deprecated: statistics are now updated automatically)')
     
     args = parser.parse_args()
     
@@ -320,13 +433,12 @@ def main():
         if update_html_file(args.html_path, new_js_data):
             print("✓ HTML projectData updated successfully!")
             
-            # Update statistics if requested
-            if args.update_stats:
-                print("Updating HTML statistics...")
-                if update_html_stats(args.html_path, source_data):
-                    print("✓ HTML statistics updated successfully!")
-                else:
-                    print("⚠ Warning: Could not update HTML statistics")
+            # Update statistics automatically
+            print("Updating HTML statistics...")
+            if update_html_stats(args.html_path, source_data):
+                print("✓ HTML statistics updated successfully!")
+            else:
+                print("⚠ Warning: Could not update HTML statistics")
             
             return 0
         else:
