@@ -92,6 +92,7 @@ def search_papers(
     bulk: bool = False,
     sort: str | None = None,
     match_title: bool = False,
+    semanticscholar_api_key: str | None = None
 ):
     """
     Search for papers from the Semantic Scholar according to the query keyword.
@@ -153,7 +154,7 @@ def search_papers(
 
     # You'll need an instance of the client to request d
     # ata from the API
-    sch = SemanticScholar(api_key=os.getenv("SEMANTICSCHOLAR_API_KEY"))
+    sch = SemanticScholar(api_key=semanticscholar_api_key or os.getenv("SEMANTICSCHOLAR_API_KEY"))
     papers = sch.search_paper(
         query,
         publication_types=publication_types,
@@ -171,7 +172,7 @@ def search_papers(
     papers = [
         paper
         for paper in papers.items
-        if paper.authors is not None and paper.authors[-1].authorId is not None
+        if paper.authors and paper.authors[-1].authorId is not None
     ]
     if len(papers) == 0:
         return "No papers found"
@@ -185,7 +186,7 @@ def search_papers(
             continue
         if paper.externalIds.get("DOI", None) is None:
             continue
-        if paper.authors is None:
+        if not paper.authors:
             continue
         if paper.authors[-1].authorId is None:
             authors = paper.authors[-1].name

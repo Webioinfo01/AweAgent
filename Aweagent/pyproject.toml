@@ -1,0 +1,18 @@
+[project]
+name = "aweagent"
+version = "0.1.0"
+
+dependencies = [
+    "agno",
+    "python-dotenv",
+    "semanticscholar",
+    "SQLAlchemy",
+    "pydantic",
+    "openai",
+    "google-generativeai",
+    "mistralai"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta" 

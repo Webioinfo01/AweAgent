@@ -45,11 +45,13 @@ class Paper(Base):
     category = Column(String(500))
 
 
-def get_database_session(database_url: str = None):
+def get_database_session(db_path: str = None):
     """Get a database session"""
-    if not database_url:
-        database_url = os.getenv("DATABASE_URL", "sqlite:///SemanticScholar_papers.db")
+    if db_path and not os.path.exists(db_path):
+        os.makedirs(db_path)
 
+    database_url = f"sqlite:///{os.path.join(db_path, 'SemanticScholar_papers.db')}" if db_path else os.getenv("DATABASE_URL", "sqlite:///SemanticScholar_papers.db")
+    
     engine = create_engine(database_url)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
